@@ -10,16 +10,19 @@ async def index(request):
     return response
 
 
-async def search_page(request):
-    pass
+async def search(request):
+    key = ''
 
+    if request.method == 'POST':
+        data = await request.post()
+        key = data.get('key')
+    elif request.method == 'GET':
+        url_key = request.match_info['url_key']
+        key = url_key.replace('+', ' ')
+    else:
+        web.Response(text='Error', status=404)
 
-async def key_page(request):
-    url_key = request.match_info['url_key']
-    print(request)
-
-    text, links = await get_content(url_key)
-    key = url_key.replace('+', ' ')
+    text, links = await get_content(key)
 
     context = {
         'website' : 'New doorway page',
@@ -36,7 +39,7 @@ aiohttp_jinja2.setup(app, loader=jinja2.FileSystemLoader('templates'))
 
 app.add_routes([web.static('/static', 'static')])
 app.add_routes([web.get('/', index)])
-app.add_routes([web.post('/search', search_page)])
-app.add_routes([web.get('/{url_key}', key_page)])
+app.add_routes([web.post('/', search)])
+app.add_routes([web.get('/{url_key}', search)])
 
 web.run_app(app, host='127.0.0.1', port=5000)

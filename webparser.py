@@ -13,12 +13,15 @@ async def get_content(key):
     url = f'https://scholar.google.ru/scholar?q={key}'
 
     async with ClientSession() as session:
+        print(url)
         async with session.get(url, headers=headers) as resp:
             html_code = await resp.text()
         html_code = html_code.replace('<b>', '')
         html_code = html_code.replace('</b>', '')
 
         dom_tree = html.fromstring(html_code)
+
+        print(html_code)
 
         links_text = dom_tree.xpath('//h3[@class="gs_rt"]/a/text()')
         links_url = dom_tree.xpath('//h3[@class="gs_rt"]/a/@href')
