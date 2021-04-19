@@ -10,6 +10,10 @@ async def index(request):
     return response
 
 
+async def search_page(request):
+    pass
+
+
 async def key_page(request):
     url_key = request.match_info['url_key']
     print(request)
@@ -32,6 +36,7 @@ aiohttp_jinja2.setup(app, loader=jinja2.FileSystemLoader('templates'))
 
 app.add_routes([web.static('/static', 'static')])
 app.add_routes([web.get('/', index)])
+app.add_routes([web.post('/search', search_page)])
 app.add_routes([web.get('/{url_key}', key_page)])
 
 web.run_app(app, host='127.0.0.1', port=5000)
